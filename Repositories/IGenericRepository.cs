@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using Stellaway.Common.Pages;
+using Stellaway.DTOs.Pages;
 
 namespace Stellaway.Repositories;
 

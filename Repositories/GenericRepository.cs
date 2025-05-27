@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Stellaway.Common.Pages;
+using Stellaway.DTOs.Pages;
 using Stellaway.Persistence.Data;
 
 namespace Stellaway.Repositories;
