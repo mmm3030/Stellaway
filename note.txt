@@ -1,0 +1,37 @@
+﻿E-mail: kokebev722@nomrista.com
+Password: 6Pe#s5@L7_Mm
+URL: https://admin.monsterasp.net
+
+	db20420.databaseasp.net
+	db20420
+	iK%2Z+9w7Xg_
+
+	https://admin.monsterasp.net/app/database/mysql/info/webmysql?database=db20420
+
+	Server=db20420.databaseasp.net; Database=db20420; Uid=db20420; Pwd=iK%2Z+9w7Xg_; 
+
+	db20420.public.databaseasp.net
+
+	https://stellaway.runasp.net/
+
+FTP and SFTP login details
+FTP Server	site27007.siteasp.net  
+Port	21   [ FTP ]
+		22   [ SFTP/SCP ]
+Login	site27007
+Password	W#o9mF2=3%Jc 
+Website Root	\wwwroot
+WebFTP	https://webftp.monsterasp.net 
+
+ user 
+ list ticket
+
+ transaction
+
+ ticket 
+ obj user
+ obj event 
+ obj seat
+ price
+ isUsed
+ qr link
