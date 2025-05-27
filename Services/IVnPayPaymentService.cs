@@ -1,4 +1,4 @@
-﻿using Stellaway.Common.Payments;
+﻿using Stellaway.DTOs.Payments;
 
 namespace Stellaway.Services;
 

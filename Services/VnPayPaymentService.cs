@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Stellaway.Common.Helpers;
-using Stellaway.Common.Payments;
 using Stellaway.Common.Settings;
+using Stellaway.DTOs.Payments;
 
 namespace Stellaway.Services;
 
