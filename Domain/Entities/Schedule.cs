@@ -15,4 +15,6 @@ public class Schedule : BaseAuditableEntity<int>
     public int RoomId { get; set; }
     public virtual Room Room { get; set; } = default!;
 
+    public virtual ICollection<Booking> Bookings { get; set; } = new HashSet<Booking>();
+
 }

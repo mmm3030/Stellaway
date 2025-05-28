@@ -28,5 +28,6 @@ public class User : IdentityUser<Guid>, IAuditableEntity
     [NotMapped]
     public IEnumerable<Role> Roles => UserRoles.Select(ur => ur.Role);
 
+    public virtual ICollection<Booking> Bookings { get; set; } = new HashSet<Booking>();
 
 }

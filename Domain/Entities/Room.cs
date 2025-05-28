@@ -20,6 +20,8 @@ public class Room : BaseAuditableEntity<int>
     [Column(TypeName = "nvarchar(24)")]
     public RoomCategory Category { get; set; }
 
+    public int NumberSeatsOfRow { get; set; }
+
     public virtual ICollection<RoomAmenity> RoomAmenities { get; set; } = new HashSet<RoomAmenity>();
 
     public virtual ICollection<RoomImage> RoomImages { get; set; } = new HashSet<RoomImage>();

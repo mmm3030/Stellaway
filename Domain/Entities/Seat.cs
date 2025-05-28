@@ -14,4 +14,6 @@ public class Seat : BaseEntity<int>
 
     public int RoomId { get; set; }
     public virtual Room Room { get; set; } = default!;
+
+    public virtual ICollection<Ticket> Tickets { get; set; } = new HashSet<Ticket>();
 }
