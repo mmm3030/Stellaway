@@ -52,7 +52,7 @@ public class AuthController(UserManager<User> userManager) : ControllerBase
             IsActive = true,
         };
 
-        var result = await userManager.CreateAsync(user);
+        var result = await userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
         {
