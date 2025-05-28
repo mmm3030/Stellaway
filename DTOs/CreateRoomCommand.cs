@@ -14,6 +14,8 @@ public sealed record CreateRoomCommand
     public RoomStatus Status { get; set; }
     public RoomCategory Category { get; set; }
 
+    public int NumberSeatsOfRow { get; set; }
+
     public ICollection<CreateRoomAmenityRequest> RoomAmenities { get; set; } = new HashSet<CreateRoomAmenityRequest>();
 
     public ICollection<CreateImageRequest> RoomImages { get; set; } = new HashSet<CreateImageRequest>();

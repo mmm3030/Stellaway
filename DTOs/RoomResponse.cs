@@ -14,6 +14,8 @@ public sealed record RoomResponse : BaseAuditableEntityResponse<int>
     public RoomStatus Status { get; set; }
     public RoomCategory Category { get; set; }
 
+    public int NumberSeatsOfRow { get; set; }
+
     public ICollection<ImageResponse> RoomImages { get; set; } = new HashSet<ImageResponse>();
 
     public ICollection<RoomAmenityResponse> RoomAmenities { get; set; } = new HashSet<RoomAmenityResponse>();

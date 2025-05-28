@@ -1,6 +1,6 @@
 ﻿namespace Stellaway.DTOs;
 
-public class CreateAmenityCommand
+public sealed record CreateAmenityCommand
 {
     public string Name { get; set; } = default!;
 }

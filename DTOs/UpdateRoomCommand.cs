@@ -14,6 +14,8 @@ public sealed record UpdateRoomCommand
     public RoomStatus Status { get; set; }
     public RoomCategory Category { get; set; }
 
+    public int NumberSeatsOfRow { get; set; }
+
     public ICollection<UpdateRoomAmenityRequest> RoomAmenities { get; set; } = new HashSet<UpdateRoomAmenityRequest>();
 
     public ICollection<UpdateImageRequest> RoomImages { get; set; } = new HashSet<UpdateImageRequest>();
