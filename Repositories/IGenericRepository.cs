@@ -39,6 +39,12 @@ public interface IGenericRepository<T> where T : class
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
         CancellationToken cancellationToken = default) where TDTO : class;
 
+    Task<IList<TDTO>> FindSelectAsync<TDTO>(
+        Func<IQueryable<T>, IQueryable<TDTO>> select,
+        Expression<Func<T, bool>>? expression = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        CancellationToken cancellationToken = default) where TDTO : class;
+
     Task<PaginatedList<TDTO>> FindAsync<TDTO>(
         int pageIndex,
         int pageSize,

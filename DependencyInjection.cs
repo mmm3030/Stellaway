@@ -24,6 +24,9 @@ using Stellaway.Services;
 using Stellaway.Persistence.Interceptors;
 using Stellaway.Persistence.SeedData;
 using Stellaway.Domain.Entities.Identities;
+using Microsoft.OpenApi.Models;
+using static System.Net.Mime.MediaTypeNames;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace Stellaway;
 
@@ -178,7 +181,16 @@ public static class DependencyInjection
 
     private static void AddSwaggerServices(this IServiceCollection services)
     {
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
+        {
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+            xmlFilename = $"{typeof(AssemblyReference).Assembly.GetName().Name}.xml";
+            c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+            c.EnableAnnotations();
+        });
     }
 
     public static async Task UseWebApplication(this WebApplication app)

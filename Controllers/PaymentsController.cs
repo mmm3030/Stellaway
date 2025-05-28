@@ -89,7 +89,7 @@ public class PaymentsController(
     CancellationToken cancellationToken)
     {
         var booking = request.Adapt<Booking>();
-        booking.Status = BookingStatus.Completed;
+        booking.Status = BookingStatus.Failed;
 
         await _bookingRepository.CreateAsync(booking, cancellationToken);
         await unitOfWork.CommitAsync(cancellationToken);

@@ -6,6 +6,8 @@ namespace Stellaway.Domain.Entities;
 
 public class Seat : BaseEntity<int>
 {
+    public int Index { get; set; }
+
     [Column(TypeName = "nvarchar(24)")]
     public SeatStatus Status { get; set; }
 

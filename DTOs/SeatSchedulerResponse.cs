@@ -2,10 +2,14 @@
 
 namespace Stellaway.DTOs;
 
-public sealed record UpdateSeatRequest
+public sealed record SeatSchedulerResponse : BaseEntityResponse<int>
 {
-    public int Id { get; set; }
     public int Index { get; set; }
+
     public SeatStatus Status { get; set; }
+
     public SeatCategory Category { get; set; }
+
+    public bool IsBooked { get; set; }
+
 }

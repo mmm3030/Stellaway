@@ -56,4 +56,3 @@ Password	W#o9mF2=3%Jc
 Website Root	\wwwroot
 WebFTP	https://webftp.monsterasp.net 
 
- hien tat ca ghe cua schedular , them status ghe da book

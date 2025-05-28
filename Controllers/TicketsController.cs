@@ -8,18 +8,18 @@ using Stellaway.Repositories;
 namespace Stellaway.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class BookingsController(
+public class TicketsController(
     IUnitOfWork unitOfWork) : ControllerBase
 {
+    private readonly IGenericRepository<Ticket> _zoneRepository = unitOfWork.Repository<Ticket>();
 
-    private readonly IGenericRepository<Booking> _bookingRepository = unitOfWork.Repository<Booking>();
     [HttpGet]
-    public async Task<ActionResult<PaginatedResponse<BookingResponse>>> GetBookings(
-        [FromQuery] GetBookingsQuery request,
+    public async Task<ActionResult<PaginatedResponse<TicketResponse>>> GetTickets(
+        [FromQuery] GetTicketsQuery request,
         CancellationToken cancellationToken)
     {
-        var zones = await _bookingRepository
-            .FindAsync<BookingResponse>(
+        var zones = await _zoneRepository
+            .FindAsync<TicketResponse>(
                 request.PageIndex,
                 request.PageSize,
                 request.GetExpressions(),
@@ -30,16 +30,16 @@ public class BookingsController(
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<BookingResponse>> GetBookingById(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<TicketResponse>> GetTicketById(int id, CancellationToken cancellationToken)
     {
-        var zone = await _bookingRepository
-            .FindByAsync<BookingResponse>(
+        var zone = await _zoneRepository
+            .FindByAsync<TicketResponse>(
             _ => _.Id == id,
             cancellationToken);
 
         if (zone is null)
         {
-            throw new NotFoundException(nameof(Booking), id);
+            throw new NotFoundException(nameof(Ticket), id);
         }
 
         return zone;

@@ -202,4 +202,25 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await query.CountAsync(cancellationToken);
     }
 
+    public async Task<IList<TDTO>> FindSelectAsync<TDTO>(
+        Func<IQueryable<T>, IQueryable<TDTO>> select,
+        Expression<Func<T, bool>>? expression = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        CancellationToken cancellationToken = default) where TDTO : class
+    {
+        IQueryable<T> query = dbSet;
+
+        if (expression != null)
+        {
+            query = query.Where(expression);
+        }
+
+        if (orderBy != null)
+        {
+            query = orderBy(query);
+        }
+
+        return await select(query).ToListAsync(cancellationToken);
+
+    }
 }
