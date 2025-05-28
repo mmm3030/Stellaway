@@ -18,6 +18,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Schedule> Schedules { get; set; } = default!;
     public DbSet<Event> Events { get; set; } = default!;
     public DbSet<EventImage> EventImages { get; set; } = default!;
+    public DbSet<Ticket> Tickets { get; set; } = default!;
+    public DbSet<Booking> Bookings { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
