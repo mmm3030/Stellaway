@@ -31,14 +31,8 @@ public sealed record GetEventsQuery : PaginationRequest<Event>
 
     public override Expression<Func<Event, bool>> GetExpressions()
     {
-        if (!string.IsNullOrWhiteSpace(Search))
-        {
-            Search = Search.Trim();
-            Expression = Expression
-                .Or(sta => EF.Functions.Like(sta.Name, $"%{Search}%"))
-                .Or(sta => EF.Functions.Like(sta.ShortDescription, $"%{Search}%"))
-                .Or(sta => EF.Functions.Like(sta.DetailedDescription, $"%{Search}%"));
-        }
+
+        Expression = Expression.And(sta => string.IsNullOrWhiteSpace(Search) || EF.Functions.Like(sta.Name, $"%{Search}%"));
         Expression = Expression.And(_ => !Category.HasValue || _.Category == Category);
         Expression = Expression.And(_ => string.IsNullOrWhiteSpace(Director) || EF.Functions.Like(_.Director, $"%{Director}%"));
         Expression = Expression.And(_ => string.IsNullOrWhiteSpace(Actors) || EF.Functions.Like(_.Actors, $"%{Actors}%"));
