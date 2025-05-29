@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using LinqKit;
 using Stellaway.Domain.Entities;
+using Stellaway.Domain.Enums;
 using Stellaway.DTOs.Pages;
 
 namespace Stellaway.DTOs;
@@ -43,6 +44,8 @@ public sealed record GetTicketsQuery : PaginationRequest<Ticket>
         Expression = Expression.And(_ => !StartTimeTo.HasValue || _.Booking.Schedule.StartTime <= StartTimeTo.Value.AddDays(1));
         Expression = Expression.And(_ => !EventId.HasValue || _.Booking.Schedule.EventId == EventId);
         Expression = Expression.And(_ => !RoomId.HasValue || _.Booking.Schedule.RoomId == RoomId);
+
+        Expression = Expression.And(_ => _.Booking.Status == BookingStatus.Completed);
 
         return Expression;
     }

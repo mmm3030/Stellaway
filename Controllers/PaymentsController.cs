@@ -1,8 +1,11 @@
 ﻿using Mapster;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using QRCoder;
 using Stellaway.Common.Exceptions;
 using Stellaway.Common.Helpers;
 using Stellaway.Domain.Entities;
+using Stellaway.Domain.Entities.Identities;
 using Stellaway.Domain.Enums;
 using Stellaway.DTOs;
 using Stellaway.DTOs.Payments;
@@ -15,6 +18,8 @@ namespace Stellaway.Controllers;
 public class PaymentsController(
     IUnitOfWork unitOfWork,
     IMomoPaymentService momoPaymentService,
+    UserManager<User> userManager,
+    IEmailSender emailSender,
     IVnPayPaymentService vnPayPaymentService) : ControllerBase
 {
     private readonly IGenericRepository<Booking> _bookingRepository = unitOfWork.Repository<Booking>();
@@ -26,21 +31,41 @@ public class PaymentsController(
     {
         var transId = request.OrderId.ConvertToGuid();
 
-        var transaction = await _bookingRepository
+        var booking = await _bookingRepository
             .FindByAsync(_ => _.Id == transId, cancellationToken: cancellationToken);
 
-        if (transaction == null)
+        if (booking == null)
         {
             throw new NotFoundException(nameof(Booking), transId);
         }
 
         if (request.IsSuccess)
         {
-            transaction.Status = BookingStatus.Completed;
+            booking.Status = BookingStatus.Completed;
+
+            var content = await System.IO.File.ReadAllTextAsync("wwwroot/Templates/Email/ReservationConfirmation.html");
+            content = content
+                .Replace("{0}", booking.User.FullName)
+                .Replace("{1}", booking.Tickets.Count.ToString())
+                .Replace("{2}", booking.TotalPrice.ToString())
+                .Replace("{3}", booking.Status.ToString())
+                .Replace("{4}", booking.CreatedAt.ToString());
+
+            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode($"http://localhost:3000/admin/check-in?id={booking.Id}", QRCodeGenerator.ECCLevel.Q))
+            using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
+            {
+                byte[] qrCodeImage = qrCode.GetGraphic(20);
+
+                _ = emailSender.SendEmailAsync(
+                       booking.User.Email!,
+                       $"Your Qr Ticket",
+                        content, qrCodeImage);
+            }
         }
         else
         {
-            transaction.Status = BookingStatus.Failed;
+            booking.Status = BookingStatus.Failed;
         }
 
         await unitOfWork.CommitAsync(cancellationToken);
@@ -58,21 +83,41 @@ public class PaymentsController(
 
         var transId = request.vnp_TxnRef?.ConvertToGuid();
 
-        var transaction = await _bookingRepository
+        var booking = await _bookingRepository
             .FindByAsync(_ => _.Id == transId, cancellationToken: cancellationToken);
 
-        if (transaction == null)
+        if (booking == null)
         {
             throw new NotFoundException(nameof(Booking), transId);
         }
 
         if (request.IsSuccess)
         {
-            transaction.Status = BookingStatus.Completed;
+            booking.Status = BookingStatus.Completed;
+
+            var content = await System.IO.File.ReadAllTextAsync("wwwroot/Templates/Email/ReservationConfirmation.html");
+            content = content
+                .Replace("{0}", booking.User.FullName)
+                .Replace("{1}", booking.Tickets.Count.ToString())
+                .Replace("{2}", booking.TotalPrice.ToString())
+                .Replace("{3}", booking.Status.ToString())
+                .Replace("{4}", booking.CreatedAt.ToString());
+
+            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode($"http://localhost:3000/admin/check-in?id={booking.Id}", QRCodeGenerator.ECCLevel.Q))
+            using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
+            {
+                byte[] qrCodeImage = qrCode.GetGraphic(20);
+
+                _ = emailSender.SendEmailAsync(
+                       booking.User.Email!,
+                       $"Your Qr Ticket",
+                        content, qrCodeImage);
+            }
         }
         else
         {
-            transaction.Status = BookingStatus.Failed;
+            booking.Status = BookingStatus.Failed;
         }
 
         await unitOfWork.CommitAsync(cancellationToken);
@@ -84,10 +129,17 @@ public class PaymentsController(
 
     [HttpPost("pay")]
     public async Task<IActionResult> Pay(
-    CreateBookingCommand request,
-    string returnUrl,
-    CancellationToken cancellationToken)
+      CreateBookingCommand request,
+      string returnUrl,
+      CancellationToken cancellationToken)
     {
+
+        var user = await userManager.FindByIdAsync(request.UserId.ToString());
+        if (user == null)
+        {
+            throw new NotFoundException(nameof(User), request.UserId);
+        }
+
         var booking = request.Adapt<Booking>();
         booking.Status = BookingStatus.Failed;
 

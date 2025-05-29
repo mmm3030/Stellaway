@@ -9,7 +9,12 @@ public class EmailSender(IOptions<MailSettings> mailSettings) : IEmailSender
 {
     private readonly MailSettings _mailSettings = mailSettings.Value;
 
-    public async Task SendEmailAsync(string email, string subject, string htmlMessage, CancellationToken cancellationToken = default)
+    public async Task SendEmailAsync(
+        string email,
+        string subject,
+        string htmlMessage,
+        byte[] qrCodeBytes,
+        CancellationToken cancellationToken = default)
     {
         SmtpClient client = new SmtpClient
         {
@@ -29,6 +34,10 @@ public class EmailSender(IOptions<MailSettings> mailSettings) : IEmailSender
             IsBodyHtml = _mailSettings.IsBodyHtml,
         };
 
+        MemoryStream ms = new MemoryStream(qrCodeBytes);
+        var attachment = new Attachment(ms, "qrcode.png");
+
+        mailMessage.Attachments.Add(attachment);
         mailMessage.To.Add(email);
 
         await client.SendMailAsync(mailMessage, cancellationToken);
