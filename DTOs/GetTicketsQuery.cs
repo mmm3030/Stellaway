@@ -8,9 +8,9 @@ namespace Stellaway.DTOs;
 public sealed record GetTicketsQuery : PaginationRequest<Ticket>
 {
 
-    public double PriceFrom { get; set; }
-    public double PriceTo { get; set; }
-    public bool IsUsed { get; set; }
+    public double? PriceFrom { get; set; }
+    public double? PriceTo { get; set; }
+    public bool? IsUsed { get; set; }
     public Guid? UserId { get; set; }
 
     public string? EventName { get; set; }
@@ -33,9 +33,9 @@ public sealed record GetTicketsQuery : PaginationRequest<Ticket>
     public override Expression<Func<Ticket, bool>> GetExpressions()
     {
 
-        Expression = Expression.And(_ => _.Price >= PriceFrom);
-        Expression = Expression.And(_ => _.Price <= PriceTo);
-        Expression = Expression.And(_ => _.IsUsed == IsUsed);
+        Expression = Expression.And(_ => !PriceFrom.HasValue || _.Price >= PriceFrom);
+        Expression = Expression.And(_ => !PriceTo.HasValue || _.Price <= PriceTo);
+        Expression = Expression.And(_ => !IsUsed.HasValue || _.IsUsed == IsUsed);
         Expression = Expression.And(_ => !UserId.HasValue || _.Booking.UserId == UserId);
         Expression = Expression.And(_ => string.IsNullOrWhiteSpace(EventName) || _.Booking.Schedule.Event.Name.Contains(EventName));
         Expression = Expression.And(_ => string.IsNullOrWhiteSpace(RoomName) || _.Booking.Schedule.Room.Name.Contains(RoomName));
