@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QRCoder;
 using Stellaway.Common.Exceptions;
 using Stellaway.Common.Helpers;
@@ -32,7 +33,8 @@ public class PaymentsController(
         var transId = request.OrderId.ConvertToGuid();
 
         var booking = await _bookingRepository
-            .FindByAsync(_ => _.Id == transId, cancellationToken: cancellationToken);
+            .FindByAsync(_ => _.Id == transId,
+            includeFunc: _ => _.Include(_ => _.User), cancellationToken: cancellationToken);
 
         if (booking == null)
         {
@@ -84,7 +86,8 @@ public class PaymentsController(
         var transId = request.vnp_TxnRef?.ConvertToGuid();
 
         var booking = await _bookingRepository
-            .FindByAsync(_ => _.Id == transId, cancellationToken: cancellationToken);
+            .FindByAsync(_ => _.Id == transId,
+            includeFunc: _ => _.Include(_ => _.User), cancellationToken: cancellationToken);
 
         if (booking == null)
         {
