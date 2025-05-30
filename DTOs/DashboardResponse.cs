@@ -7,6 +7,8 @@ public sealed record DashboardResponse
     public UserStatisticResponse UserStatistic { get; set; } = default!;
     public EventStatisticResponse EventStatistic { get; set; } = default!;
 
+    public ICollection<MonthlyRevenue> MonthlyRevenues { get; set; } = new HashSet<MonthlyRevenue>();
+
 }
 
 public sealed record RevenueResponse
@@ -33,4 +35,10 @@ public sealed record EventStatisticResponse
     public int CurrentEventCount { get; set; }
     public int LastMonthEventCount { get; set; }
     public int Difference { get; set; } // tăng/giảm so với tháng trước
+}
+
+public sealed record MonthlyRevenue
+{
+    public int Month { get; set; }
+    public double Total { get; set; }
 }

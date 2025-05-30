@@ -1,10 +1,14 @@
-﻿using Stellaway.Domain.Common;
+﻿using EntityFrameworkCore.Projectables;
+using Stellaway.Domain.Common;
 
 namespace Stellaway.Domain.Entities;
 
 public class Schedule : BaseAuditableEntity<int>
 {
     public DateTimeOffset StartTime { get; set; }
+
+    [Projectable]
+    public DateTimeOffset EndTime => StartTime.AddMinutes(Event.Duration + 30);
     public double PriceVip { get; set; }
     public double PriceNormal { get; set; }
     public double PriceEconomy { get; set; }

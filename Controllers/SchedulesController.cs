@@ -14,6 +14,7 @@ public class SchedulesController(
     IUnitOfWork unitOfWork) : ControllerBase
 {
     private readonly IGenericRepository<Schedule> _scheduleRepository = unitOfWork.Repository<Schedule>();
+    private readonly IGenericRepository<Event> _eventRepository = unitOfWork.Repository<Event>();
 
     [HttpGet]
     public async Task<ActionResult<PaginatedResponse<ScheduleResponse>>> GetSchedules(
@@ -50,6 +51,27 @@ public class SchedulesController(
     [HttpPost]
     public async Task<ActionResult<MessageResponse>> CreateSchedule(CreateScheduleCommand command, CancellationToken cancellationToken)
     {
+        var eventSchedule = await _eventRepository.FindByIdAsync(command.EventId);
+        if (eventSchedule is null)
+        {
+            throw new NotFoundException(nameof(Event), command.EventId);
+        }
+        var startTime = command.StartTime;
+        var endTime = startTime.AddMinutes(eventSchedule.Duration + 30);
+
+        var scheduleCheck = await _scheduleRepository
+            .ExistsByAsync(
+                _ => _.RoomId == command.RoomId &&
+                   (startTime >= _.StartTime && startTime <= _.EndTime ||
+                    endTime >= _.StartTime && endTime <= _.EndTime ||
+                    _.StartTime >= startTime && _.EndTime <= endTime ||
+                    _.EndTime >= startTime && _.EndTime <= endTime));
+
+        if (scheduleCheck)
+        {
+            throw new BadRequestException("Đã có lịch trong khoảng thời gian này");
+
+        }
 
         var zone = command.Adapt<Schedule>();
         await _scheduleRepository.CreateAsync(zone, cancellationToken);

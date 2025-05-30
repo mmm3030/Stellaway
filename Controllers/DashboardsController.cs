@@ -26,6 +26,7 @@ public class DashboardsController(
         var firstDayLastMonth = firstDayThisMonth.AddMonths(-1);
         var firstDayNextMonth = firstDayThisMonth.AddMonths(1);
         var firstDayThisMonthForLastCheck = firstDayThisMonth;
+        int currentYear = DateTimeOffset.UtcNow.Year;
 
         var currentMonthRevenue = (await _bookingRepository.FindAsync(b => b.CreatedAt >= firstDayThisMonth && b.CreatedAt < firstDayNextMonth))
             .Sum(b => b.TotalPrice);
@@ -120,12 +121,32 @@ public class DashboardsController(
             Difference = currentEventCount - lastMonthEventCount
         };
 
+        var revenueInYear = await _context.Bookings
+          .Where(t => t.CreatedAt!.Value.Year == currentYear)
+          .GroupBy(t => t.CreatedAt!.Value.Month)
+          .Select(g => new MonthlyRevenue
+          {
+              Month = g.Key,
+              Total = g.Sum(t => t.TotalPrice)
+          })
+          .ToListAsync();
+
+        // Đảm bảo có đủ 12 tháng (có thể có tháng không có dữ liệu)
+        var result = Enumerable.Range(1, 12)
+            .Select(m => new MonthlyRevenue
+            {
+                Month = m,
+                Total = revenueInYear.FirstOrDefault(x => x.Month == m)?.Total ?? 0
+            })
+            .ToList();
+
         return Ok(new DashboardResponse
         {
             Revenue = revenue,
             TicketStatistic = ticketStatistic,
             UserStatistic = userStatistic,
-            EventStatistic = eventStatistic
+            EventStatistic = eventStatistic,
+            MonthlyRevenues = result
 
         });
     }

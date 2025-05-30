@@ -24,6 +24,7 @@ public class PaymentsController(
     IVnPayPaymentService vnPayPaymentService) : ControllerBase
 {
     private readonly IGenericRepository<Booking> _bookingRepository = unitOfWork.Repository<Booking>();
+    private readonly IGenericRepository<Schedule> _scheduleRepository = unitOfWork.Repository<Schedule>();
 
     [HttpGet("callback/momo")]
     public async Task<IActionResult> MomoPaymentCallback(
@@ -136,6 +137,13 @@ public class PaymentsController(
       string returnUrl,
       CancellationToken cancellationToken)
     {
+        var now = DateTimeOffset.UtcNow;
+
+        if (await _scheduleRepository.ExistsByAsync(_ => _.Id == request.ScheduleId && now >= _.StartTime))
+        {
+            throw new BadRequestException("không thể book lịch đã diễn ra");
+
+        }
 
         var user = await userManager.FindByIdAsync(request.UserId.ToString());
         if (user == null)
