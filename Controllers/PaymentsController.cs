@@ -55,7 +55,7 @@ public class PaymentsController(
                 .Replace("{4}", booking.CreatedAt.ToString());
 
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
-            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode($"http://localhost:3000/admin/check-in?id={booking.Id}", QRCodeGenerator.ECCLevel.Q))
+            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode($"https://ticket-system-beta.vercel.app/admin/check-in?id={booking.Id}", QRCodeGenerator.ECCLevel.Q))
             using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
             {
                 byte[] qrCodeImage = qrCode.GetGraphic(20);
@@ -108,7 +108,7 @@ public class PaymentsController(
                 .Replace("{4}", booking.CreatedAt.ToString());
 
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
-            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode($"http://localhost:3000/admin/check-in?id={booking.Id}", QRCodeGenerator.ECCLevel.Q))
+            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode($"https://ticket-system-beta.vercel.app/admin/check-in?id={booking.Id}", QRCodeGenerator.ECCLevel.Q))
             using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
             {
                 byte[] qrCodeImage = qrCode.GetGraphic(20);
