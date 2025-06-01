@@ -25,7 +25,7 @@ public sealed record GetRoomsQuery : PaginationRequest<Room>
         {
             Search = Search.Trim();
             Expression = Expression
-                .Or(sta => EF.Functions.Like(sta.Name, $"%{Search}%"))
+                .And(sta => EF.Functions.Like(sta.Name, $"%{Search}%"))
                 .Or(sta => EF.Functions.Like(sta.Description, $"%{Search}%"));
         }
 
