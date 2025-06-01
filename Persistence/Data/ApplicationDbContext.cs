@@ -20,6 +20,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<EventImage> EventImages { get; set; } = default!;
     public DbSet<Ticket> Tickets { get; set; } = default!;
     public DbSet<Booking> Bookings { get; set; } = default!;
+    public DbSet<Review> Reviews { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

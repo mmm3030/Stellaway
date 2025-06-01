@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Stellaway.Domain.Entities;
 using Stellaway.Domain.Entities.Identities;
+using Stellaway.Domain.Enums;
 using Stellaway.DTOs;
 using Stellaway.Persistence.Data;
 using Stellaway.Repositories;
@@ -49,12 +50,12 @@ public class DashboardsController(
 
         // Vé đã bán trong tháng này
         var currentCount = await _context.Tickets
-            .Where(t => t.CreatedAt >= firstDayThisMonth && t.CreatedAt < firstDayNextMonth)
+            .Where(t => (t.CreatedAt >= firstDayThisMonth && t.CreatedAt < firstDayNextMonth) && t.Booking.Status == BookingStatus.Completed)
             .CountAsync();
 
         // Vé đã bán trong tháng trước
         var lastMonthCount = await _context.Tickets
-            .Where(t => t.CreatedAt >= firstDayLastMonth && t.CreatedAt < firstDayThisMonthForLastCheck)
+            .Where(t => (t.CreatedAt >= firstDayLastMonth && t.CreatedAt < firstDayThisMonthForLastCheck) && t.Booking.Status == BookingStatus.Completed)
             .CountAsync();
 
         double percentTicketChange = 0;

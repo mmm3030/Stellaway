@@ -22,5 +22,6 @@ public class Booking : BaseAuditableEntity<Guid>
     public virtual Schedule Schedule { get; set; } = default!;
 
     public virtual ICollection<Ticket> Tickets { get; set; } = new HashSet<Ticket>();
+    public virtual ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
 
 }
