@@ -29,10 +29,14 @@ public class DashboardsController(
         var firstDayThisMonthForLastCheck = firstDayThisMonth;
         int currentYear = DateTimeOffset.UtcNow.Year;
 
-        var currentMonthRevenue = (await _bookingRepository.FindAsync(b => b.CreatedAt >= firstDayThisMonth && b.CreatedAt < firstDayNextMonth))
+        var currentMonthRevenue = (await _bookingRepository.FindAsync(b => (
+                b.CreatedAt >= firstDayThisMonth && b.CreatedAt < firstDayNextMonth)
+                && b.Status == BookingStatus.Completed))
             .Sum(b => b.TotalPrice);
 
-        var lastMonthRevenue = (await _bookingRepository.FindAsync(b => b.CreatedAt >= firstDayLastMonth && b.CreatedAt < firstDayThisMonth))
+        var lastMonthRevenue = (await _bookingRepository.FindAsync(b =>
+                (b.CreatedAt >= firstDayLastMonth && b.CreatedAt < firstDayThisMonth) &&
+                b.Status == BookingStatus.Completed))
                 .Sum(b => b.TotalPrice);
 
         double percentChange = 0;
@@ -50,12 +54,15 @@ public class DashboardsController(
 
         // Vé đã bán trong tháng này
         var currentCount = await _context.Tickets
-            .Where(t => (t.CreatedAt >= firstDayThisMonth && t.CreatedAt < firstDayNextMonth) && t.Booking.Status == BookingStatus.Completed)
+            .Where(t => (t.CreatedAt >= firstDayThisMonth && t.CreatedAt < firstDayNextMonth) &&
+                         t.Booking.Status == BookingStatus.Completed)
             .CountAsync();
 
         // Vé đã bán trong tháng trước
         var lastMonthCount = await _context.Tickets
-            .Where(t => (t.CreatedAt >= firstDayLastMonth && t.CreatedAt < firstDayThisMonthForLastCheck) && t.Booking.Status == BookingStatus.Completed)
+            .Where(t => (t.CreatedAt >=
+                    firstDayLastMonth && t.CreatedAt < firstDayThisMonthForLastCheck) &&
+                    t.Booking.Status == BookingStatus.Completed)
             .CountAsync();
 
         double percentTicketChange = 0;
@@ -123,7 +130,7 @@ public class DashboardsController(
         };
 
         var revenueInYear = await _context.Bookings
-          .Where(t => t.CreatedAt!.Value.Year == currentYear)
+          .Where(t => t.CreatedAt!.Value.Year == currentYear && t.Status == BookingStatus.Completed)
           .GroupBy(t => t.CreatedAt!.Value.Month)
           .Select(g => new MonthlyRevenue
           {
