@@ -46,7 +46,7 @@ public class PaymentsController(
         {
             booking.Status = BookingStatus.Completed;
 
-            var content = await System.IO.File.ReadAllTextAsync("wwwroot/Templates/Email/ReservationConfirmation.html");
+            var content = await System.IO.File.ReadAllTextAsync("wwwroot/Templates/Email/mail.html");
             content = content
                 .Replace("{0}", booking.User.FullName)
                 .Replace("{1}", booking.Tickets.Count.ToString())
@@ -99,7 +99,7 @@ public class PaymentsController(
         {
             booking.Status = BookingStatus.Completed;
 
-            var content = await System.IO.File.ReadAllTextAsync("wwwroot/Templates/Email/ReservationConfirmation.html");
+            var content = await System.IO.File.ReadAllTextAsync("wwwroot/Templates/Email/mail.html");
             content = content
                 .Replace("{0}", booking.User.FullName)
                 .Replace("{1}", booking.Tickets.Count.ToString())
