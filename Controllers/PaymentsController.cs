@@ -145,6 +145,14 @@ public class PaymentsController(
 
         }
 
+        if (await _bookingRepository.ExistsByAsync(
+            _ => _.ScheduleId == request.ScheduleId &&
+            _.Tickets.Any(_ => request.Tickets.Select(_ => _.SeatId).Contains(_.SeatId))))
+        {
+            throw new BadRequestException("Ghế này đã được book");
+
+        }
+
         var user = await userManager.FindByIdAsync(request.UserId.ToString());
         if (user == null)
         {
